@@ -1,0 +1,289 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CInP Client</title>
+
+  <!-- Bootstrap -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- App -->
+  <link href="screen.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">CInP Client</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Modals -->
+  <div id="server-error-dialog" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Server Error</h4>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-detail">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container-fluid">
+    <div class="row" id="main-panel">
+      <div class="col-md-2 sidebar">
+        <ul id="ns-tree">
+        </ul>
+      </div>
+
+      <div class="col-md-10 col-md-offset-2 main">
+        <div class="row">
+          <div class="col-md-6" >
+            <div class="input-group">
+              <span class="input-group-addon">API Location</span>
+              <input type="text" class="form-control" placeholder="http://127.0.0.1:8888/api/v1/" id="api-location-text">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="connect-btn">Connect</button>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-3" >
+            <div class="input-group">
+              <span class="input-group-addon">Auth Id</span>
+              <input type="text" class="form-control" placeholder="" id="auth-id-text">
+            </div>
+          </div>
+          <div class="col-md-3" >
+            <div class="input-group">
+              <span class="input-group-addon">Auth token</span>
+              <input type="text" class="form-control" placeholder="" id="auth-token-text">
+            </div>
+          </div>
+        </div>
+
+        <div class="row" >
+          <div class="col-md-4">
+            <span class="input-group-addon">Path</span>
+            <span class="input-group-addon" id="path"></span>
+          </div>
+        </div>
+
+        <div class="row" >
+          <ul class="nav nav-tabs">
+            <li role="presentation"><a href="#" id="describe-label">Describe</a></li>
+            <li role="presentation"><a href="#" id="list-label">List</a></li>
+            <li role="presentation"><a href="#" id="get-label">Get</a></li>
+            <li role="presentation"><a href="#" id="create-label">Create</a></li>
+            <li role="presentation"><a href="#" id="update-label">Update</a></li>
+            <li role="presentation"><a href="#" id="delete-label">Delete</a></li>
+            <li role="presentation"><a href="#" id="call-label">Call</a></li>
+          </ul>
+        </div>
+
+        <div class="row" id="describe-panel" >
+          <div class="panel panel-default">
+            <div class="panel-heading">Describe Detail</div>
+              <table class="table" id="describe-values-table">
+                <thead><tr><th>Key</th><th>Value</th></tr></thead>
+                <tbody/>
+              </table>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Fields</div>
+            <table class="table" id="describe-fields-table">
+              <thead><tr><th>Name</th><th>Type</th><th>Mode</th><th>Default</th><th>Attribs</th></tr></thead>
+              <tbody/>
+            </table>
+          </div>
+        </div>
+
+        <div class="row" id="list-panel" >
+          <div class="row">
+            <div class="col-md-4">
+               <div class="input-group">
+                <span class="input-group-addon">Position</span>
+                <input type="text" class="form-control" placeholder="0" id="list-position-text">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="input-group">
+                <span class="input-group-addon">Count</span>
+                <input type="text" class="form-control" placeholder="10" id="list-count-text">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="list-btn">Load</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="alert alert-info" role="alert" id="list-alert"></div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">List Detail</div>
+              <table class="table" id="list-table">
+                <thead><tr><th>Path</th></tr></thead>
+                <tbody/>
+              </table>
+          </div>
+        </div>
+
+        <div class="row" id="get-panel" >
+          <div class="row">
+            <div class="col-md-4">
+               <div class="input-group">
+                <span class="input-group-addon">Id</span>
+                <input type="text" class="form-control" placeholder="" id="get-id-text">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="get-btn">Get</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="alert alert-info" role="alert" id="get-alert"></div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Get Detail</div>
+              <table class="table" id="get-values-table">
+                <tbody/>
+              </table>
+          </div>
+        </div>
+
+        <div class="row" id="create-panel" >
+          <div class="row">
+            <div class="col-md-4">
+              <span class="input-group-addon">Id</span>
+              <span class="input-group-addon" id="create-id"></span>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="create-btn">Create</button>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="create-clear-btn">Clear</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="alert alert-info" role="alert" id="create-alert"></div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Create Detail</div>
+              <table class="table" id="create-values-table">
+                <tbody/>
+              </table>
+          </div>
+        </div>
+
+        <div class="row" id="update-panel" >
+          <div class="row">
+            <div class="col-md-4">
+               <div class="input-group">
+                <span class="input-group-addon">Id</span>
+                <input type="text" class="form-control" placeholder="" id="update-id-text">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="update-get-btn">Get</button>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="update-btn">Update</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="alert alert-info" role="alert" id="update-alert"></div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Update Detail</div>
+              <table class="table" id="update-values-table">
+                <tbody/>
+              </table>
+          </div>
+        </div>
+
+        <div class="row" id="delete-panel" >
+          <div class="row">
+            <div class="col-md-4">
+               <div class="input-group">
+                <span class="input-group-addon">Id</span>
+                <input type="text" class="form-control" placeholder="" id="delete-id-text">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="delete-btn">Delete</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="alert alert-info" role="alert" id="delete-alert"></div>
+          </div>
+        </div>
+
+        <div class="row" id="call-panel" >
+          <div class="row">
+            <div class="col-md-4">
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="action-dropdown-label" data-toggle="dropdown" aria-haspopup="true">
+                  Actions
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="action-dropdown-label" id="action-dropdown"/>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-default" type="button" id="call-btn">Call</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="alert alert-info" role="alert" id="call-alert"></div>
+          </div>
+          <div class="row">
+             <div class="input-group" id="call-id-group">
+              <span class="input-group-addon">Id</span>
+              <input type="text" class="form-control" placeholder="" id="call-id-text">
+            </div>
+          </div>
+          <div class="row">
+            <div class="panel panel-default">
+              <div class="panel-heading">Action Paramaters</div>
+                <table class="table" id="call-paramater-table">
+                  <tbody/>
+                </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row" id="settings-panel">
+    <h2>Settings</h2>
+  </div>
+
+  <div class="row" id="about-panel">
+    <h2>CInP Browser</h2>
+  </div>
+
+  <!-- jQuery -->
+  <script src="js/jquery.js"></script>
+  <!-- Bootstrap -->
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/treed.js"></script>
+  <!-- App -->
+  <script src="app/cinp.js"></script>
+  <script src="app/main.js"></script>
+</body>
+</html>
