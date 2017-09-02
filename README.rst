@@ -7,6 +7,13 @@ This provides a generic CInP API Browser/Client as a Web Extension(Browser plugi
 Installation
 ============
 
+NOTE: when the interface get's ironed out and stablized, we will package and
+publish a packaged version of the plugin to the Chrome and Firefox Sites/Stores.
+PLEASE do not publish this plugin to the Chrome/Firefox extension Site/Store.  You
+are welcome to make your own extension, if you make it ovious it is your own and
+it does not cause confusion with this extension.  If you have sujestions for
+this extension please submit a PR or issue.
+
 Chrome - Dev Mode
 -----------------
 
@@ -28,13 +35,15 @@ Chrome - Building Extension
 
 see https://developer.chrome.com/extensions/packaging
 
+You will want to install it uncompressed, at this point (9/1/17) not seeing the
+point of generating a .crx file.
+
 Firefox - Building Extension
 ---------------------------
 
 see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Publishing_your_WebExtension
 
-NOTE: when the interface get's ironed out and stablised, we will package and
-publish a packaged version of the plugin to the Chrome and Firefox Sites.
+
 
 Using
 =====

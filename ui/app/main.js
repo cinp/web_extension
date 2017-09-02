@@ -59,7 +59,17 @@ function connect( event )
 
 function _describe_fail( message, detail )
 {
-  serverError( message, detail );
+  // yes, this is diferent, there is not global XXXXX-alert for describe
+  // when there is this can change, can't user ServerError b/c the cinp handler
+  // could use it, and if it does, calling ServerError here would cover that up
+  if( detail === undefined )
+  {
+    alert( message );
+  }
+  else
+  {
+    alert( message + ": " + detail );
+  }
 }
 
 function set_auth( event )
