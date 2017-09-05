@@ -141,6 +141,7 @@ function setElement( path )
   $( '#update-alert' ).empty();
   $( '#delete-alert' ).empty();
   $( '#call-alert' ).empty();
+  $( '#call-doc' ).empty();
   $( '#call-id-group' ).hide();
   $( '#call-id-text' ).val( '' );
 
@@ -257,8 +258,13 @@ function _describe_done( data )
       {
         default_value = '';
       }
+      var doc = field.doc;
+      if( doc === undefined )
+      {
+        doc = '';
+      }
 
-      fields.append( '<tr><td>' + field.name  + '</td><td>' + field.type + '</td><td>' + field.mode + '</td><td>' + default_value + '</td><td>' + attribs + '</td></tr>' );
+      fields.append( '<tr><td>' + field.name  + '</td><td>' + field.type + '</td><td>' + field.mode + '</td><td>' + default_value + '</td><td>' + attribs + '</td><td>' + doc + '</td></tr>' );
 
       get_table.append( '<tr><th id="get-' + field.name + '-label">' + field.name + '</th><td><span id="get-' + field.name + '"/></td></tr>' );
       create_table.append( '<tr><th id="create-' + field.name + '-label">' + field.name + '</th><td><span id="create-' + field.name + '"/></td></tr>' );
@@ -544,6 +550,7 @@ function _delete_fail( message, detail )
 function load_action( event )
 {
   $( '#call-alert' ).empty();
+  $( '#call-doc' ).empty();
   $( '#call-id-group' ).hide();
   $( '#call-id-text' ).val( '' );
 
@@ -563,7 +570,13 @@ function _call_describe_done( data )
 
   for( var paramater of data.paramaters )
   {
-    var row = $( '<tr><th id="paramater-' + paramater.name + '-label">' + paramater.name + '</th><td><span id="paramater-' + paramater.name + '"/></td></tr>' );
+    var doc = paramater.doc;
+    if( doc === undefined )
+    {
+      doc = '';
+    }
+
+    var row = $( '<tr><th id="paramater-' + paramater.name + '-label">' + paramater.name + '</th><td><span id="paramater-' + paramater.name + '"/></td><td>' + doc + '</td></tr>' );
     _edit_func( paramater, row.find( '#paramater-' + paramater.name ) )
     paramater_table.append( row );
     paramater_map[ paramater.name ] = paramater;
@@ -575,6 +588,15 @@ function _call_describe_done( data )
     $( '#call-id-group' ).show();
   }
 
+  if( data.doc )
+  {
+    $( '#call-doc' ).html( data.doc );
+    $( '#call-doc' ).show();
+  }
+  else
+  {
+    $( '#call-doc' ).hide();
+  }
   $( '#call-alert' ).html( 'Action: "' + cur_action + '" loaded' );
 }
 

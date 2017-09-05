@@ -72,3 +72,11 @@ and performs a *DELETE* request.  `Call` lists all actions that were described,
 upon selecting one the paramaters for that action are displaied.  If it is a
 non-static action, an `Id` field will be displaied for the `Id` of the object
 to run the action against.
+
+
+Footnote
+========
+
+The UI on this extension is not the best, it works but is not pretty.  I am not 
+a UI expert (I don't even play on on TV), if you are and would like to help make
+this tool more usable, by all means, let me know.
