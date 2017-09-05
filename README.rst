@@ -20,8 +20,8 @@ Chrome - Dev Mode
 Goto `chrome://extensions/` check `Developer Mode` check box, now click the
 `Load Unpacked Extension`, browse to the web_extension folder and select open.
 You should now have the Extension loaded, it will only stay loaded until
-Chrome is restarted.  To reload changes hit the reload button on the extensions page.
-
+Chrome is restarted.  To reload changes hit the reload button on the extensions 
+page or reload when the extension is open.
 
 Firefox - Dev Mode
 ------------------
@@ -29,20 +29,6 @@ Firefox - Dev Mode
 Goto `about:debugging`, click `Load Temporary Add-on` and select any file in the
 web_extension folder.  Restarting the browser will unload the Extension.  To reload
 there is a `Reload` button on the `about:debugging` screen for the CInP Extension.
-
-Chrome - Building Extension
----------------------------
-
-see https://developer.chrome.com/extensions/packaging
-
-You will want to install it uncompressed, at this point (9/1/17) not seeing the
-point of generating a .crx file.
-
-Firefox - Building Extension
----------------------------
-
-see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Publishing_your_WebExtension
-
 
 
 Using
