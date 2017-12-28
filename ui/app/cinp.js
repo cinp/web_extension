@@ -179,11 +179,11 @@ var cinpBuilder = {};
 
               if( type == 'Namespace' )
               {
-                deferred.resolve( { type: 'namespace', name: data.name, doc: data.doc, path: data.path, version: data[ 'api-version' ], uri_max: data[ 'multi-uri-max' ], namespace_list: data.namespaces, model_list: data.models }, uri );
+                deferred.resolve( { type: 'namespace', name: data.name, doc: data.doc, path: data.path, version: data[ 'api-version' ], multi_uri_max: data[ 'multi-uri-max' ], namespace_list: data.namespaces, model_list: data.models }, uri );
               }
               else if( type == 'Model' )
               {
-                deferred.resolve( { type: 'model', name: data.name, doc: data.doc, path: data.path, constant_list: data.constants, field_list: data.fields, action_list: data.actions, not_allowed_methods: data[ 'not-allowed-metods' ], list_filters: data[ 'list-filters' ] }, uri );
+                deferred.resolve( { type: 'model', name: data.name, doc: data.doc, path: data.path, constant_list: data.constants, field_list: data.fields, action_list: data.actions, not_allowed_methods: data[ 'not-allowed-metods' ], list_filter_list: data[ 'list-filters' ] }, uri );
               }
               else if( type == 'Action' )
               {
