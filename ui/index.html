@@ -113,24 +113,42 @@
 
         <div class="row" id="list-panel" >
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="filter-dropdown-label" data-toggle="dropdown" aria-haspopup="true">
+                  List Filters
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filter-dropdown-label" id="filter-dropdown"/>
+              </div>
+            </div>
+            <div class="col-md-3">
                <div class="input-group">
                 <span class="input-group-addon">Position</span>
                 <input type="text" class="form-control" placeholder="0" id="list-position-text">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="input-group">
                 <span class="input-group-addon">Count</span>
                 <input type="text" class="form-control" placeholder="10" id="list-count-text">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <button class="btn btn-default" type="button" id="list-btn">Load</button>
             </div>
           </div>
           <div class="row">
             <div class="alert alert-info" role="alert" id="list-alert"></div>
+          </div>
+          <div class="row" id="list-paramater-row">
+            <div class="panel panel-default">
+              <div class="panel-heading">Filter Paramaters</div>
+                <table class="table" id="list-paramater-table">
+                  <thead><tr><th>Name</th><th>Value</th><th>Doc</th></tr></thead>
+                  <tbody/>
+                </table>
+            </div>
           </div>
           <div class="panel panel-default">
             <div class="panel-heading">List Detail</div>

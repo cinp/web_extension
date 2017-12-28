@@ -6,6 +6,8 @@ var cur_path;
 var cur_action;
 var field_map;
 var paramater_map;
+var current_filter;
+var filter_paramater_map;
 
 $( document ).ready( function()
 {
@@ -120,6 +122,8 @@ function setElement( path )
   action_list = [];
   cur_action = null;
   paramater_map = {};
+  current_filter = '* ALL *';
+  filter_paramater_map = {};
 
   $( '#path' ).html( path );
 
@@ -134,8 +138,11 @@ function setElement( path )
   $( '#update-id-text' ).val( '' );
   $( '#delete-id-text' ).val( '' );
   $( '#action-dropdown' ).empty();
+  $( '#filter-dropdown' ).empty();
   $( '#call-paramater-table tbody' ).empty();
+  $( '#list-paramater-table tbody' ).empty();
   $( '#list-alert' ).empty();
+  $( '#list-paramater-row' ).hide();
   $( '#get-alert' ).empty();
   $( '#create-alert' ).empty();
   $( '#update-alert' ).empty();
@@ -207,13 +214,17 @@ function _describe_done( data )
     {
       continue;
     }
-    else if( key == 'list_filters' )
+    else if( key == 'list_filter_list' )
     {
       values.append( '<tr><td>' + key + '</td><td>' + Object.keys( data[ key ] ) + '</td></tr>' );
     }
+    else if( key == 'constant_list' )
+    {
+      values.append( '<tr><td>' + key + '</td><td>' + JSON.stringify( data[ key ] ) + '</td></tr>' );
+    }
     else
     {
-       values.append( '<tr><td>' + key + '</td><td>' + data[ key ] + '</td></tr>' );
+      values.append( '<tr><td>' + key + '</td><td>' + data[ key ] + '</td></tr>' );
     }
   }
 
@@ -226,6 +237,25 @@ function _describe_done( data )
       var entry = $( '<li>' + action + '</li>' );
       entry.on( 'click', load_action );
       $( '#action-dropdown' ).append( entry );
+    }
+
+    var entry = $( '<li>* ALL *</li>' );
+    entry.on( 'click', load_filter );
+    $( '#filter-dropdown' ).append( entry );
+
+    for( var filter_name in data.list_filter_list )
+    {
+      var entry = $( '<li>' + filter_name + '</li>' );
+      entry.on( 'click', load_filter );
+      $( '#filter-dropdown' ).append( entry );
+
+      filter_paramater_map[ filter_name ] = {};
+      for( var paramater of data.list_filter_list[ filter_name ] )
+      {
+        var doc = paramater.doc;
+
+        filter_paramater_map[ filter_name ][ paramater.name ] = paramater;
+      }
     }
 
     for( var tab of [ 'list', 'get', 'create', 'update', 'delete', 'call' ] )
@@ -257,6 +287,10 @@ function _describe_done( data )
       if( default_value === undefined )
       {
         default_value = '';
+      }
+      else
+      {
+        default_value = JSON.stringify( default_value );
       }
       var doc = field.doc;
       if( doc === undefined )
@@ -311,7 +345,25 @@ function list( event )
   $( '#list-table tbody' ).empty();
   $( '#list-alert' ).empty();
 
-  cinp.list( cur_path, undefined, undefined, $( '#list-position-text' ).val(), $( '#list-count-text' ).val() )
+  var filter_name = current_filter;
+  var filter_values = undefined;
+  if( filter_name == '* ALL *' )
+  {
+    filter_name = undefined;
+    filter_values = undefined;
+  }
+  else
+  {
+    filter_values = {};
+    for( var paramater in filter_paramater_map[ current_filter ] )
+    {
+      filter_values[ paramater ] = $( '#filter-paramater-' + paramater ).data( 'get' )( $( '#filter-paramater-' + paramater ) );
+      $( '#filter-paramater-' + paramater +'-label' ).removeClass( 'alert-danger' );
+      $( '#filter-paramater-' + paramater ).trigger( 'error_clear' );
+    }
+  }
+
+  cinp.list( cur_path, filter_name, filter_values, $( '#list-position-text' ).val(), $( '#list-count-text' ).val() )
     .done( _list_done )
     .fail( _list_fail );
 }
@@ -335,8 +387,21 @@ function _list_fail( message, detail )
   }
   else
   {
-    $( '#list-alert' ).html( 'Error: "' + message + '": "' + detail + '"' );
+    if( typeof( detail ) == 'object' )
+    {
+      $( '#list-alert' ).append( 'Fix Errors Below' );
+      for( var paramater in detail )
+      {
+        $( '#filter-paramater-' + paramater +'-label' ).addClass( 'alert-danger' );
+        $( '#filter-paramater-' + paramater ).trigger( 'error', [ detail[ paramater ] ] );
+      }
+    }
+    else
+    {
+      $( '#list-alert' ).html( 'Error: "' + message + '": "' + detail + '"' );
+    }
   }
+
 }
 
 function get( event )
@@ -547,6 +612,39 @@ function _delete_fail( message, detail )
   }
 }
 
+function load_filter( event )
+{
+  $( '#list-alert' ).empty();
+
+  var paramater_table = $( '#list-paramater-table tbody' );
+  paramater_table.empty();
+
+  current_filter = this.childNodes[0].textContent;
+
+  if( current_filter == '* ALL *' )
+  {
+    $( '#list-paramater-row' ).hide();
+    return;
+  }
+
+  $( '#list-paramater-row' ).show();
+
+  for( var name in filter_paramater_map[ current_filter ] )
+  {
+    var paramater = filter_paramater_map[ current_filter ][ name ];
+    var doc = paramater.doc;
+    if( doc === undefined )
+    {
+      doc = '';
+    }
+
+    var row = $( '<tr><th id="filter-paramater-' + paramater.name + '-label">' + paramater.name + '</th><td><span id="filter-paramater-' + paramater.name + '"/></td><td>' + doc + '</td></tr>' );
+    _edit_func( paramater, row.find( '#filter-paramater-' + paramater.name ) )
+    paramater_table.append( row );
+    $( '#filter-paramater-' + paramater.name ).trigger( 'clear' );
+  }
+}
+
 function load_action( event )
 {
   $( '#call-alert' ).empty();
@@ -647,7 +745,7 @@ function _call_fail( message, detail )
   {
     if( typeof( detail ) == 'object' )
     {
-      $( '#update-alert' ).append( 'Fix Errors Below' );
+      $( '#call-alert' ).append( 'Fix Errors Below' );
       for( var paramater in detail )
       {
         $( '#paramater-' + paramater +'-label' ).addClass( 'alert-danger' );
