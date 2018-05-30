@@ -282,6 +282,10 @@ function _describe_done( data )
       {
         attribs.push( 'uri: ' + field.uri );
       }
+      if( field.choices !== undefined )
+      {
+        attribs.push( 'choices: ' + field.choices );
+      }
 
       var default_value = field.default;
       if( default_value === undefined )
