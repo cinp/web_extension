@@ -47,7 +47,7 @@ var cinpBuilder = {};
         }
       };
 
-      cinp._request = function( method, uri, data, header_map )
+      cinp._request = function( verb, uri, data, header_map )
       {
         if( this.auth_id !== null )
         {
@@ -55,7 +55,7 @@ var cinpBuilder = {};
         }
 
         var request = {
-          type: method,
+          type: verb,
           url: this.host + uri,
           dataType: 'json',
           accepts: { json: 'application/json', text: 'application/json' },
@@ -66,7 +66,7 @@ var cinpBuilder = {};
           global: false
         };
 
-        if( method == 'DELETE' || method == 'CALL' )
+        if( verb == 'DELETE' || verb == 'CALL' )
         {
           // server sends empty response on delete, dataType = json it tires to parse the  response, which fails
           // so we set it to text so it dosen't try to parse anything.  which causes us to have to tweek accepts.
@@ -77,9 +77,9 @@ var cinpBuilder = {};
         return $.ajax( request );
       }
 
-      cinp._ajax_fail = function( method, uri, deferred, xhr )
+      cinp._ajax_fail = function( verb, uri, deferred, xhr )
       {
-        console.error( 'cinp: doing "' + method + '" on "' +  uri + '" Status: ' + xhr.status );
+        console.error( 'cinp: doing "' + verb + '" on "' +  uri + '" Status: ' + xhr.status );
         var data;
         try
         {
@@ -90,7 +90,7 @@ var cinpBuilder = {};
           data = xhr.responseText;
         }
 
-        if( data === undefined ) // for some methods we set dataType to text, for thoes we are going to try to parse the JSON our selves
+        if( data === undefined ) // for some verbs we set dataType to text, for thoes we are going to try to parse the JSON our selves
         {
           data = xhr.responseText;
           try
@@ -183,7 +183,7 @@ var cinpBuilder = {};
               }
               else if( type == 'Model' )
               {
-                deferred.resolve( { type: 'model', name: data.name, doc: data.doc, path: data.path, constant_list: data.constants, field_list: data.fields, action_list: data.actions, not_allowed_methods: data[ 'not-allowed-metods' ], list_filter_list: data[ 'list-filters' ] }, uri );
+                deferred.resolve( { type: 'model', name: data.name, doc: data.doc, path: data.path, constant_list: data.constants, field_list: data.fields, action_list: data.actions, not_allowed_verbs: data[ 'not-allowed-verbs' ], list_filter_list: data[ 'list-filters' ] }, uri );
               }
               else if( type == 'Action' )
               {
@@ -342,13 +342,13 @@ var cinpBuilder = {};
               {
                 data = JSON.parse( data );
               }
-              deferred.resolve( data, uri );
+              deferred.resolve( data, xhr.getResponseHeader( 'Multi-Object' ), uri );
             }
           )
           .fail( function( xhr ) { this._ajax_fail( 'Call', uri, deferred, xhr ); }.bind( this ) );
 
         return deferred.promise();
-      }
+      };
 
       cinp.splitURI = function( uri )
       {
@@ -365,7 +365,7 @@ var cinpBuilder = {};
         }
 
         return result;
-      }
+      };
 
       cinp.extractIds = function( uri_list )
       {
@@ -383,7 +383,7 @@ var cinpBuilder = {};
         }
 
         return result;
-      }
+      };
 
       cinp.getMulti = function( uri, id_list, chunk_size )
       {
@@ -408,7 +408,7 @@ var cinpBuilder = {};
         }
 
         return deferred.promise();
-      }
+      };
 
       cinp.getFilteredObjects = function( uri, filter_name, filter_value_map, list_chunk_size, get_chunk_size ) // For now we are only getting one list_chunk_size, and getting the all the list at the same time.
       {
@@ -428,7 +428,7 @@ var cinpBuilder = {};
           .fail( function() { deferred.reject.apply( deferred, arguments ); } );
 
         return deferred.promise();
-      }
+      };
 
       cinp._getFilteredObjectsDone = function( deferred, uri, data, position, count, total )
       {
@@ -442,7 +442,7 @@ var cinpBuilder = {};
         this.getMulti( uri, id_list, count )
           .done( function( object_map ) { deferred.resolve( object_map ); } )
           .fail( function() { deferred.reject.apply( deferred, arguments ); } );
-      }
+      };
 
       return cinp;
     };
