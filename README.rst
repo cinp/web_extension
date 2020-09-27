@@ -7,12 +7,18 @@ This provides a generic CInP API Browser/Client as a Web Extension(Browser plugi
 Installation
 ============
 
-NOTE: when the interface gets ironed out and stabilized, we will package and
+NOTE: when the interface gets ironed out and stabilized, we will
 publish a packaged version of the plugin to the Chrome and Firefox Sites/Stores.
 PLEASE do not publish this plugin to the Chrome/Firefox extension Site/Store.  You
 are welcome to make your own extension, if you make it obvious it is your own and
 it does not cause confusion with this extension.  If you have suggestions for
 this extension please submit a PR or issue.
+
+Currently published to Chrome at (unlisted):
+https://chrome.google.com/webstore/detail/cinp-generic-client/lacnhpojnjgdohcdggednghjibhgkeop
+
+Firefox:
+https://github.com/cinp/web_extension/releases/download/0.9.5/cinp_client-0.9.5-fx.xpi
 
 Chrome - Dev Mode
 -----------------
