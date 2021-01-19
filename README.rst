@@ -18,7 +18,7 @@ Currently published to Chrome at (unlisted):
 https://chrome.google.com/webstore/detail/cinp-generic-client/lacnhpojnjgdohcdggednghjibhgkeop
 
 Firefox:
-https://github.com/cinp/web_extension/releases/download/0.9.5/cinp_client-0.9.5-fx.xpi
+https://github.com/cinp/web_extension/releases/download/0.9.6/cinp_client-0.9.6-fx.xpi
 
 Chrome - Dev Mode
 -----------------
