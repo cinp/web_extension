@@ -159,7 +159,11 @@ function setElement( path )
 
 function _edit_func( paramater, target )
 {
-  if( paramater.type == 'String' )
+  if( paramater.is_array )
+  {
+    listEdit( target, paramater.default );
+  }
+  else if( paramater.type == 'String' )
   {
     if( paramater.length === null )
     {
@@ -462,9 +466,14 @@ function create( event )
   var values = {}
   for( var field in field_map )
   {
+    var value;
     if( field_map[ field ].mode == 'RW' || field_map[ field ].mode == 'RC' )
     {
-      values[ field ] = $( '#create-' + field ).data( 'get' )( $( '#create-' + field ) );
+      value = $( '#create-' + field ).data( 'get' )( $( '#create-' + field ) );
+      if( field_map[ field ].required || value )
+      {
+        values[ field ] = value;
+      }
     }
     $( '#create-' + field + '-label' ).removeClass( 'alert-danger' );
     $( '#create-' + field ).trigger( 'error_clear' );
@@ -538,11 +547,16 @@ function update( event )
   var values = {}
   for( var field in field_map )
   {
+    var value;
     if( field_map[ field ].mode == 'RW' )
     {
-      values[ field ] = $( '#update-' + field ).data( 'get' )( $( '#update-' + field ) );
+      value = $( '#update-' + field ).data( 'get' )( $( '#update-' + field ) );
+      if( field_map[ field ].required || value )
+      {
+        values[ field ] = value;
+      }
     }
-    $( '#update-' + field +'-label' ).removeClass( 'alert-danger' );
+    $( '#update-' + field + '-label' ).removeClass( 'alert-danger' );
     $( '#update-' + field ).trigger( 'error_clear' );
   }
 
@@ -1053,10 +1067,8 @@ function mapView( target )
 
 function _removeMapEditRow( event )
 {
-  var element = $( event );
-  var parent = $( event ).parent();
-
-  parent.remove( element );
+  var row = $( event.target ).closest( 'tr' );
+  row.remove();
 }
 
 const _mapEditRow = '<tr><td><input id="key" length="30"/></td><td><input id="value" length="30"/></td><td><button type="button" class="btn btn-default btn" id="remove"><span class="glyphicon glyphicon-minus" aria-hidden="true" /></button></td></tr>';
@@ -1077,7 +1089,7 @@ function mapEdit( target, default_value )
 
   target.find( '#add' ).on( 'click', function()
     {
-      var body = $( this ).parent().parent().parent().parent().parent().find( 'tbody' );
+      var body = $( this ).closest( 'table' ).find( 'tbody' );
       var row = $( _mapEditRow );
 
       row.find( '#remove' ).on( 'click', _removeMapEditRow );
@@ -1137,6 +1149,100 @@ function mapEdit( target, default_value )
       {
         row = $( row );
         result[ row.find( '#key' ).val() ] = row.find( '#value' ).val();
+      }
+
+      return result;
+    } );
+  target.on( 'error', function( event, msg ) { $( this ).data( 'msg' ).html( msg ); $( this ).data( 'msg' ).show(); return false; } );
+  target.on( 'error_clear', function() { $( this ).data( 'msg' ).empty(); $( this ).data( 'msg' ).hide(); return false; } );
+
+  container.empty();
+  container.append( target );
+  container.append( msg );
+}
+
+function _removeListEditRow( event )
+{
+  var row = $( event.target ).closest( 'tr' );
+  row.remove();
+}
+
+const _listEditRow = '<tr><td><input id="value" length="30"/></td><td><button type="button" class="btn btn-default btn" id="remove"><span class="glyphicon glyphicon-minus" aria-hidden="true" /></button></td></tr>';
+
+function listEdit( target, default_value )
+{
+  var id = target.attr( 'id' );
+  var container = target.parent();
+  target = $( '<table id="' + id +  '" class="table"><thead><tr><td>Value</td><td><button type="button" class="btn btn-default btn" id="add"><span class="glyphicon glyphicon-plus" aria-hidden="true" /></button></td></tr></thead><tbody /></table>' );
+  var msg = $( '<span class="alert alert-info"/>' );
+  var body = $( this ).find( 'tbody' );
+
+  target.data( 'msg', msg );
+  if( default_value !== undefined )
+  {
+    target.data( 'default', default_value );
+  }
+
+  target.find( '#add' ).on( 'click', function()
+    {
+      var body = $( this ).closest( 'table' ).find( 'tbody' );
+      var row = $( _listEditRow );
+
+      row.find( '#remove' ).on( 'click', _removeListEditRow );
+      body.append( row );
+
+      return false;
+    } );
+
+  target.on( 'clear', function()
+    {
+      var body = $( this ).find( 'tbody' )
+      var default_value = $( this ).data( 'default' );
+
+      if( default_value !== undefined )
+      {
+        for( var key in default_value )
+        {
+          var row = $( _listEditRow );
+          row.find( '#remove' ).on( 'click', _removeListEditRow );
+          row.find( '#value' ).val( default_value[ key ] );
+          body.append( row );
+        }
+      }
+      else
+      {
+        body.empty();
+      }
+      $( this ).data( 'msg' ).empty();
+      $( this ).data( 'msg' ).hide();
+
+      return false;
+    } );
+  target.on( 'set', function( event, value )
+    {
+      var body = $( this ).find( 'tbody' );
+
+      body.empty();
+      for( var index in value )
+      {
+        var row = $( _listEditRow );
+        row.find( '#remove' ).on( 'click', _removeListEditRow );
+
+        row.find( '#value' ).val( value[ index ] );
+        body.append( row );
+      }
+
+      return false;
+    } );
+  target.data( 'get', function( field )
+    {
+      var body = $( field ).find( 'tbody' );
+      var result = []
+
+      for( var row of body.children() )
+      {
+        row = $( row );
+        result.push( row.find( '#value' ).val() );
       }
 
       return result;
