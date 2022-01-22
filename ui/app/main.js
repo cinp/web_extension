@@ -222,7 +222,7 @@ function _describe_done( data )
     {
       values.append( '<tr><td>' + key + '</td><td>' + Object.keys( data[ key ] ) + '</td></tr>' );
     }
-    else if( key == 'constant_list' )
+    else if( ( key == 'constant_list' ) || ( key == 'query_filter_field_list' ) )
     {
       values.append( '<tr><td>' + key + '</td><td>' + JSON.stringify( data[ key ] ) + '</td></tr>' );
     }
@@ -246,6 +246,13 @@ function _describe_done( data )
     var entry = $( '<li>* ALL *</li>' );
     entry.on( 'click', load_filter );
     $( '#filter-dropdown' ).append( entry );
+
+    if( data.query_filter_field_list.length > 0 )
+    {
+      var entry = $( '<li>* QUERY *</li>' );
+      entry.on( 'click', load_filter );
+      $( '#filter-dropdown' ).append( entry );
+    }
 
     for( var filter_name in data.list_filter_list )
     {
@@ -359,6 +366,12 @@ function list( event )
   {
     filter_name = undefined;
     filter_values = undefined;
+  }
+  else if( filter_name == '* QUERY *' )
+  {
+    filter_name = '_query_';
+    filter_values = {};
+    filter_values[ 'filter' ] = $( '#filter-paramater-filter' ).data( 'get' )( $( '#filter-paramater-filter' ) );
   }
   else
   {
@@ -646,6 +659,15 @@ function load_filter( event )
   }
 
   $( '#list-paramater-row' ).show();
+
+  if( current_filter == '* QUERY *' )
+  {
+    var row = $( '<tr><th id="filter-paramater-filter-label">Filter</th><td><span id="filter-paramater-filter"/></td></tr>' );
+    _edit_func( { 'type': 'Map' }, row.find( '#filter-paramater-filter' ) )
+    paramater_table.append( row );
+    $( '#filter-paramater-filter' ).trigger( 'clear' );
+    return;
+  }
 
   for( var name in filter_paramater_map[ current_filter ] )
   {
