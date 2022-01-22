@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "CInP Generic Client",
   "short_name": "CInP Client",
-  "version": "0.9.6",
+  "version": "1.0.0",
 
   "description": "CInP Generic API Enpoint Browser and Client",
   "icons": { "16":  "images/icon_16.png",

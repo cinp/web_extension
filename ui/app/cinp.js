@@ -1,7 +1,7 @@
 /*
  * CInP jquery client
  * version 0.9
- * for CInP API version 0.9
+ * for CInP API version 1.0
  *
  * Copyright Peter Howe, Floyd Arguello
  * Released under the Apache 2.0 license
@@ -59,7 +59,7 @@ var cinpBuilder = {};
           url: this.host + uri,
           dataType: 'json',
           accepts: { json: 'application/json', text: 'application/json' },
-          headers: $.extend( {}, header_map, { 'CInP-Version': '0.9' } ),
+          headers: $.extend( {}, header_map, { 'CInP-Version': '1.0' } ),
           data: JSON.stringify( data ),
           contentType: 'application/json',
           processData: false,
@@ -183,7 +183,7 @@ var cinpBuilder = {};
               }
               else if( type == 'Model' )
               {
-                deferred.resolve( { type: 'model', name: data.name, doc: data.doc, path: data.path, constant_list: data.constants, field_list: data.fields, action_list: data.actions, id_field_name: data[ 'id-field-name' ], not_allowed_verbs: data[ 'not-allowed-verbs' ], list_filter_list: data[ 'list-filters' ] }, uri );
+                deferred.resolve( { type: 'model', name: data.name, doc: data.doc, path: data.path, constant_list: data.constants, field_list: data.fields, action_list: data.actions, id_field_name: data[ 'id-field-name' ], not_allowed_verb_list: data[ 'not-allowed-verbs' ], list_filter_list: data[ 'list-filters' ], query_filter_field_list: data[ 'query-filter-fields' ], query_sort_field_list: data[ 'query-sort-fields' ] }, uri );
               }
               else if( type == 'Action' )
               {
